@@ -1,0 +1,85 @@
+﻿@model InvoiceViewModels;
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Index" method="post">
+                <div class="form-group">
+                    <label for="userSelect">Kullanıcı Seçin:</label>
+                    <select id="userSelect" name="cusID" class="form-control" onchange="this.form.submit()">
+                        <option value="">Seçiniz</option>
+
+                        @foreach (var user in Model.Customers)
+                        {
+                            if (ViewBag.SelectedCustomerID != null && user.CustomerId.ToString() == ViewBag.SelectedCustomerID.ToString())
+                            {
+                                <option value="@user.CustomerId" selected>@user.Title</option>
+                            }
+                            else
+                            {
+                                <option value="@user.CustomerId">@user.Title</option>
+                            }
+                        }
+
+
+
+                    </select>
+                    @if (ViewBag.MaxPaymentAmount != null && ViewBag.MaxPaymentAmountDate != null && ViewBag.RemaingDebt != null)
+                    {
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="maxPaymentAmount">Maksimum Ödeme Miktarı:</label>
+                                    <p id="maxPaymentAmount">@ViewBag.MaxPaymentAmount.ToString("N2")</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="maxPaymentAmountDate">Ödeme Tarihi:</label>
+                                    <p id="maxPaymentAmountDate">@ViewBag.MaxPaymentAmountDate.ToString("dd-MM-yyyy")</p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="remaingDebt">Güncel Kalan Borç:</label>
+                                    <p id="remaingDebt">@ViewBag.RemaingDebt.ToString("N2")</p>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    }
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Müşteri</th>
+                            <th>Fatura Tarihi</th>
+                            <th>Fatura Tutarı</th>
+                            <th>Ödeme Tarihi</th>
+                            <th>Ödeme Durumu</th>
+                            <th>Fatura Ödeme</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var inv in Model.Invoices)
+                        {
+                            <tr>
+                                <td>@Model.Customers.FirstOrDefault(x => x.CustomerId == inv.CustomerId)?.Title</td>
+                                <td>@inv.InvoiceDate.ToString("dd-MM-yyyy")</td>
+                                <td>@inv.InvoiceAmount.ToString("N2")</td>
+                                <td>@inv.PaymentDate?.ToString("dd-MM-yyyy")</td>
+                                <td>@(inv.PaymentDate != null ? "Ödendi" : "Ödenmedi") </td>
+                                <td>
+                                    @if (inv.PaymentDate == null)
+                                    {
+                                        <a href="/Invoice/UpdateInvoice/@inv.InvoiceId" class="btn btn-outline-primary">Öde</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

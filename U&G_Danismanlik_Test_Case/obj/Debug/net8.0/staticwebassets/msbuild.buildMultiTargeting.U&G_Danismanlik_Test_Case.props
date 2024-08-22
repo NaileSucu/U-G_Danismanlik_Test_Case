@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\U&amp;G_Danismanlik_Test_Case.props" />
+</Project>
